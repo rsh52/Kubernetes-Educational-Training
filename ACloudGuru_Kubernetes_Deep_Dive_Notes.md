@@ -31,3 +31,4 @@ Kubernetes clusters are made up of numerous Linux nodes, VMs, or cloud instances
 - **Worker Nodes**: where the apps run
 
 ### The Kubernetes API
+
