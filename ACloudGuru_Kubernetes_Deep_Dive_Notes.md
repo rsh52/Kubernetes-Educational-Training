@@ -1,4 +1,4 @@
-# A Cloud Guru Notes: AWS Certified Solutions Architect Associate Course
+# A Cloud Guru Notes: Kubernetes Deep Dive Course
 
 **Author:** Richard Hanna
 
@@ -10,7 +10,7 @@ This is an admittedly scrawled series of notes, so please excuse any typos :swea
 
 **Symbol Key:**
 
-- :bulb: = AWS exam likelihood
+- :bulb: = Key Point
 
 ## Kubernetes Big Picture
 
