@@ -32,3 +32,47 @@ Kubernetes clusters are made up of numerous Linux nodes, VMs, or cloud instances
 
 ### The Kubernetes API
 
+Everything housed in Kubernetes is a resource defined in the API (pods, deployments, secerts, etc.). It is "RESTful" and use HTTPS to perform CRUD-style operations/verbs (**C**reate, **R**ead, **U**pdate, **D**elete).
+
+Kubernetes is based on **Declarative Configuration**. App components are defined via YAML files, YAML files are posted to the API as a record of intent, and this updates the overall desired state of the cluster. Meanwhile, the control plane is constantly running services that check that the current observed state of the cluster matches the desired state. Those watch loops will notice when there is a mismatched and kick in the services to bring the current state up to speed with the desired state.
+
+![Current vs Desired State](/img/current_vs_desired_state.png)
+
+There are numerous API groups to break up the API monolith:
+
+- core
+- apps
+- authorization
+- storage
+
+[**SIGs**](https://github.com/kubernetes/community/blob/master/sig-list.md) ("**S**pecial **I**nterest **G**roups")look after API groups. These are human beings responsible for feature development.
+
+### Kubernetes Objects
+
+**Containers** are run in Kubernetes by **pods**. Pods are the most atomic element of Kubernetes, but can contain multiple containers.
+
+Pods are objects that exist on the **cluster**. Pods are wrapped into a **deployment**, also an object in the cluster. Both of these are defined in the `apps/v1` API group. Deployments are meant to make pods scalable, rollbacks and updates simple, etc.
+
+**Daemon sets** (`ds`) make sure that one, and only one, of a specific podpod will run on ever worker in the cluster.
+
+**Stateful sets** (`sts`) are for pods or parts of the app with stateful requirements.
+
+## Application Architecture
+
+### Theory
+
+**Sample application theoretical setup:**
+
+![Sample App Setup](/img/sample_app_setup.png)
+
+**Kubernetes sample app infrastructure:**
+
+![Sample App K8s Infra](/img/sample_app_k8s_infra.png)
+
+### Kubernetes Networking
+
+### Common Networking Requirements
+
+Prior to Kubernetes, apps used to be giant monoliths containing all their necessary services with a single IP address. Now, all of the services are separated out and have their own IP addresses, which are also their own **endpoints**. This requires a solid and dynamic DNS.
+
+"Churn" = addition and removal of endpoints from the network when scaling happens. Highly dynamic networks are the new normal and so churn occurs constantly.
