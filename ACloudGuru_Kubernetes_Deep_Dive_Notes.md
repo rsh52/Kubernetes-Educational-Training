@@ -75,4 +75,55 @@ Pods are objects that exist on the **cluster**. Pods are wrapped into a **deploy
 
 Prior to Kubernetes, apps used to be giant monoliths containing all their necessary services with a single IP address. Now, all of the services are separated out and have their own IP addresses, which are also their own **endpoints**. This requires a solid and dynamic DNS.
 
-"Churn" = addition and removal of endpoints from the network when scaling happens. Highly dynamic networks are the new normal and so churn occurs constantly.
+"Churn" = addition and removal of endpoints from the network when scaling happens. Highly dynamic networks are the new normal and so churn occurs constantly. This creates and changes IPs.
+
+### Kubernetes Networking Basics
+
+"House Rules:"
+
+- All Nodes can talk
+- All Pods can talk with each other without NAT
+  - **pods are ephemeral**
+- Every Pod gets its own IP address
+
+The two networks to remember are **Nodes** and **Pods**.
+
+![Pod Network Interface](/img/pod_network_interface.png)
+
+A fundamental concept with pod networks is that once you are inside the network, all pods are free to talk to each other.
+
+### Kubernetes Service Fundamentals
+
+**Services** (`svc`) are the key ingredient for providing a stable abstraction point for pods. The service object logically exists in front of the pods, and tell objects like the Cart and Accounts to hit the Service instead of the pods directly.
+
+Every Service gets a name and an IP. Created services are _stable_ and never change.
+
+Every cluster has a native DNS service and every pod knows how to use it. This lets every pod be able to reach the service.
+
+Kubernetes also creates objects on the cluster called **endpoints** which are responsible for informing the service about which pods are alive.
+
+**Example Service diagram:**
+
+![Service Diagram](img/service_diagram.png)
+
+### Service Types
+
+The main spec types are `LoadBalancer`, `ClusterIP`, and `NodePort`.
+
+`ClusterIP` is the default and most basic. Gives the service its own IP which is only reachable from inside the cluster.
+
+![Cluster IP](/img/clusterip.png)
+
+`NodePort` gives the service a cluster-wide port and enables access outside the cluster.
+
+![NodePort](/img/nodeport.png)
+
+`LoadBalancer` integrates with public cloud platform. You don't have to create the NodePort, Kubernetes handles it.
+
+![LoadBalancer](/img/load_balancer.png)
+
+### Demo Notes
+
+All demo notes use the 3 deployment YAML manifests found in `/lesson-network`.
+
+> **You can SSH into a pod by using `kubectl exec -it <insert pod name>`**
