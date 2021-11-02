@@ -127,3 +127,39 @@ The main spec types are `LoadBalancer`, `ClusterIP`, and `NodePort`.
 All demo notes use the 3 deployment YAML manifests found in `/lesson-network`.
 
 > **You can SSH into a pod by using `kubectl exec -it <insert pod name>`**
+
+### Kubernetes Storage
+
+### Kubernetes Storage Big Picture
+
+**Kubernetes Volumes** decouple storage from pods. Volumes exist on the cluster, pods lay claims to them and mount them. This way if a pod dies, the volume still persists. Volumes can be shared between multiple pods.
+
+"File" and "Block" storage are standards based, have a pluggable back end, and a rich API.
+
+In the image below is the storage system on the left (gives us storage features), the PV subsystem on the right (gives us means of consumption), and in the middle is the CSI (Container Storage Interface) connecting them.
+
+- **PV**: Storage space
+- **PVC**: Ticket for the application to use the PV
+- **SC**: Makes this dynamic and scalable
+
+![Storage Requirement Overview](/img/storage_requirement_overview.png)
+
+### The Container Storage Interface
+
+The [CSI](https://github.com/container-storage-interface) connects the storage system with the PV Kubernetes subsytem. This open source, open standard solution completely decouples Kubernetes from the source code. This allows developers to release updates on their own schedule without worry about having to make their code open source.
+
+The CSI actually is not Kubernetes specific, allowing third party users to write their own plug-ins. However, for Kubernetes there is a preferred CSI plugin.
+
+![CSI](/img/csi.png)
+
+### Persistent Volumes and Persistent Volume Claims
+
+A PV is a storage backend made available inside the Kubernetes cluster. In AWS, for example, this can be a HD or SSD with a specified size and Read/Write capability.
+
+To use the PV, a pod needs a PV Claim (PVC). PVCs, like everything else, are resources in the API and objects in the cluster. In the diagram below we see the YAML files for a PV and PVC and so long as the yellow areas match then the two are combined:
+
+![PV PVC](/img/pv_pvc_yaml.png)
+
+You can retrieve information about PVs with:
+
+`kubectl get pv`
