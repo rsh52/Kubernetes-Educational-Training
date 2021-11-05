@@ -188,3 +188,19 @@ reclaimPolicy: Retain
 ![SC Cross Reference](img/sc_cross_reference.png)
 
 As you can see above, the `metadata` `name` is important for referencing asset classes across each other.
+
+## From Code to Kubernetes
+
+### Big Picture
+
+High level big picture interaction:
+
+![Big Picture 3 Pieces](img/big_picture_3_pieces.png)
+
+The basic gist is:
+- Load your code and dependencies into a directory
+- Write a Docker file telling Docker how to build it all into an image
+- Push the image to registry (on prem or in a VPC)
+- Roll into a Kubernetes deployment (see below)
+
+![Big Picture 3 Pieces 2](img/big_picture_3_pieces_2.png)
