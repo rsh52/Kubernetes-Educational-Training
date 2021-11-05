@@ -163,3 +163,28 @@ To use the PV, a pod needs a PV Claim (PVC). PVCs, like everything else, are res
 You can retrieve information about PVs with:
 
 `kubectl get pv`
+
+### Storage Classes
+
+> Storage classes enable dynamic provisioning of volumes.
+
+You can have as many storage classes (`sc`) as you want, but each one relates to a particular storage backend by referencing a plug-in. In the YAML files, plug-ins are called `provisoner`s.
+
+**Example storage class YAML declaration**:
+
+```YAML
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: sc-fast
+provisoner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+```
+
+**Interaction and cross-referencing resources:**
+
+![SC Cross Reference](img/sc_cross_reference.png)
+
+As you can see above, the `metadata` `name` is important for referencing asset classes across each other.
