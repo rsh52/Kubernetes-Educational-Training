@@ -204,3 +204,28 @@ The basic gist is:
 - Roll into a Kubernetes deployment (see below)
 
 ![Big Picture 3 Pieces 2](img/big_picture_3_pieces_2.png)
+
+### Recap
+
+![Code to Kubernetes Recap](img/code_to_kubernetes_recap.png)
+
+- Code (language of choice) with any dependencies
+- Send to a directory
+- Send to a Docker file to build a Docker image
+- Put the image into a container for Kubernetes to reach (i.e. Docker Hub, cloud, etc.)
+- Send to a deployment/daemon set/stateful set, wrap the container in one or more pods
+- Finally run `kubectl apply -f ...` to run the code on the cluster
+
+## Kubernetes Deployments
+
+### Theory of Deployments
+
+Up till now we understand that our source code basically gets fed into an image that gets sent to a container. Since Kubernetes doesn't like "naked" containers, the container is wrapped up in a pod.
+
+Pods are wrapped into **deployments** in much the same way that pods wrap containers. Between the deployment and pods is a **replica set** which takes handling of scaling mechanics that deployments rely on. However, you rarely see or interact with replica sets, mostly just deployments.
+
+![Deployment Diagram](img/deployment_diagram.png)
+
+Changes to the deployment should be done _declaratively_ directly in the `deployment.yml` file with version control.
+
+> **Note**: It is better to update your deployment using the YAML file with `kubectl` than it is to undo a rollout with the `kubectl rollout undo` command
