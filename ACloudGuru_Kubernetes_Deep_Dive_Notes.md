@@ -228,4 +228,13 @@ Pods are wrapped into **deployments** in much the same way that pods wrap contai
 
 Changes to the deployment should be done _declaratively_ directly in the `deployment.yml` file with version control.
 
-> **Note**: It is better to update your deployment using the YAML file with `kubectl` than it is to undo a rollout with the `kubectl rollout undo` command
+> **Note**: It is better to update your deployment using the YAML file with `kubectl` than it is to undo a rollout with the `kubectl rollout undo` command.
+> **Note:** Labels are what connects deployments to pods.
+
+## Scaling Applications
+
+### Big Picture
+
+To automatically add more nodes there is the **Cluster Autoscaler** and to add more pods there's the **Horizontal Pod Autoscaler**.
+
+The horizontal pod autoscaler basically takes the job of auto-configuring the `replicas: __` line from your deployment manifest file. It will auto increase or decrease the number of pods needed. Once the nodes containing those pods reach their capacity, the cluster autoscaler increases the number of nodes to take care of any pods listed as "pending."
