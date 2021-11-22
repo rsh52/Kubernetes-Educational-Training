@@ -238,3 +238,33 @@ Changes to the deployment should be done _declaratively_ directly in the `deploy
 To automatically add more nodes there is the **Cluster Autoscaler** and to add more pods there's the **Horizontal Pod Autoscaler**.
 
 The horizontal pod autoscaler basically takes the job of auto-configuring the `replicas: __` line from your deployment manifest file. It will auto increase or decrease the number of pods needed. Once the nodes containing those pods reach their capacity, the cluster autoscaler increases the number of nodes to take care of any pods listed as "pending."
+
+### Horizontal Pod Autoscaler Theory
+
+You define the `hpa` just like any othe resource and connect it to a deployment.
+
+In the following example, `targetCPUUtilizationPercentage` dictates a pod CPU threshold for the `hpa` to maintain and the deployment uses `resources` requests to keep it:
+
+![HPA Resource Request](img/hpa_resource_request.png)
+
+In this example, `cpu: 0.2` is the same as saying "200 milicores" or "200m" where 1000m = 1CPU. So in this case, 1/5 or 20% of a CPU.
+
+When CPU usage reaches the threshold based on the resource requests, a new pod will get triggered.
+
+You can find information about your `hpa` using the command:
+
+```bash
+kubectl get hpa --namespace <namespace>
+```
+
+The `hpa` does not know how to scale or schedule pods, it just knows _when_ to do it. The "how" is taken care of by the deployment.
+
+### Cluster Autoscaler Theory
+
+This requires autoscaling enabled in your cloud-hosted K8s service. "Pools" of identically spec'd nodes are defined. Each node pool gets a max and min value for number of nodes it has.
+
+Then you configure your deployment similarly. Cluster scaling **only works** if you configure your pods with resource requests. Schedule all of your pods with resource requests!
+
+As the `hpa` scales and grows pods, if any of the pods wind up going to "pending" due to insufficient node resources, the cluster autoscaler will kick in and grow the cluster.
+
+![Cluster Autoscaler Theory](img/cluster_autoscaler_theory.png)
