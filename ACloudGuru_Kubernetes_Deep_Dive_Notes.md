@@ -268,3 +268,46 @@ Then you configure your deployment similarly. Cluster scaling **only works** if 
 As the `hpa` scales and grows pods, if any of the pods wind up going to "pending" due to insufficient node resources, the cluster autoscaler will kick in and grow the cluster.
 
 ![Cluster Autoscaler Theory](img/cluster_autoscaler_theory.png)
+
+## RBAC and Admission Control
+
+### Big Picture
+
+While we as users take advantage of the `kubectl` client, every resource in the control plane is also a client.
+
+The "client" talks to the API server via HTTPS, and then authentication kicks in. After authentication comes authorization. So first check _who_ is making the request, then if that identity is _allowed/authorized_ to make the request (RBAC = "roll based access control").
+
+Next comes "admission control" for modifying and validating requests. For example: you may enforce a policy that makes all pods going into a certain namespace to be outfitted with a certain label. Finally comes schema validation, and if all of these pass then the request successfully goes through to the cluster.
+
+![Security Pipeline](img/security_pipeline.png)
+
+### Authentication
+
+> **Proving you are who you say you are**
+
+Kubernetes does not store or manage "users". Users must be manually created and managed outside the cluster. Users _cannot_ be created in Kubernetes.
+
+Instead these come from Active Directory, IAM, etc.
+
+- You post your request, with credentials to the API server
+- The API server checks bearer tokens, client certs, bootstrap tokens, external systems, etc. for whether this user is valid
+
+![API Authentication](img/api_authentication.png)
+
+_**Service Accounts**_ on the other hand are stored in K8s. But they are for `System` components. They care created and managed by the cluster, and their credentials are stored in secrets.
+
+### Authorization (`authz`)
+
+> **Which users can perform which actions on which resources?**
+
+- Example users (Subject): `lily`, `system:authenticated`, `sam`
+- Example actions (Verb): `get`, `create`, `delete`
+- Example resources: `deployments`, `pods`, `services`
+
+When you create a cluster you get a default power user which is great for labs and testing but not good for production. This is why up until now we haven't been locked out of anything.
+
+Roles & RoleBindings control least privileges:
+
+![RBAC Roles & Role Bindings](img/rbac_roles_bindings.png)
+
+Note: RBAC denies everything by default.
