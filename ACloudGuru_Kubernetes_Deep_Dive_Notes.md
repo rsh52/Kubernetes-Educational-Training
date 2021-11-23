@@ -311,3 +311,38 @@ Roles & RoleBindings control least privileges:
 ![RBAC Roles & Role Bindings](img/rbac_roles_bindings.png)
 
 Note: RBAC denies everything by default.
+
+### Admission Control
+
+Admission Control takes place after a request has been authenticated and authorized, it then makes sure that policies and standards are enforced. **Webhooks** let you hook into external admission controllers.
+
+**Warning** the external code has to be ensured secure.
+
+There are two types of admission control:
+
+- **Mutating**: Modify requests
+- **Validating**: Don't modify requests
+
+> **Note:** All of the mutating/validating admission checks must pass, if one fails then the request will be denied.
+
+### Recap
+
+![RBAC Recap](img/rbac_recap.png)
+
+## Other Kubernetes Stuff
+
+**Daemon Sets** manage pods by making sure a particular pod is running on every node.
+
+**Stateful Sets** brings K8s to the stateful elements of your app.
+
+**Jobs** (or batch jobs) are for running a specified number of pods and making sure they complete.
+
+**CronJobs** are similar to jobs but run against a schedule.
+
+**PodSecurityPolicy** objects list a bunch of things a pod has to conform to before it runs on a cluster (ex: deny access to the underlying host system).
+
+**Pod resource requests and limits** should always be included when decalaring your pods.
+
+**ResourceQuota** objects are used on namespaces to let you set limits against them including object counts and resource usage. If adding something new breaches the quota it will result in an error.
+
+**CustomResourceDefinition** objects help extend K8s API in the local cluster so it can have othe resources. Example: code the logic of your app into your cluster as though it were a native K8s resource. Lets you manage and deploy it with `kubectl`!
